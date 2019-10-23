@@ -1,0 +1,17 @@
+{
+    "pages": [{
+        "entry": "games",
+        "title": "蛋",
+        "cdn": {
+            "js": ["//wechat-1253215910.cossh.myqcloud.com/js/utils/rem-750.js"]
+        }
+    }],
+    "basePath": "./src/views/",
+    "cdn": {
+        "js": ["//wechat-1253215910.cossh.myqcloud.com/js/utils/vue.min.js"],
+        "css": ["//wechat-1253215910.cossh.myqcloud.com/js/utils/normalize.css"]
+    },
+    "externals": {
+        "vue": "Vue"
+    }
+}
