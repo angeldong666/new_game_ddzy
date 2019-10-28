@@ -190,12 +190,12 @@
                 let lefts = that.newImagesShow;
                 let imgHost = 'http://download.pceggs.com:8080/xjyx/egg/';
                 time = 10000; //动作延迟默认10s
-                console.log(type + '---' + status)
+                // console.log(type + '---' + status)
                 if (type == status) {
                     return
                 }
-                if (status == 'feed') {
-                    return that.$toast('小鸡进食中')
+                if (status == 'feed' && !that.layeggShow) {
+                    return that.$toast('不要着急,还没吃完呢')
                 }
                 if (status == 'layegg') {
                     return
@@ -241,42 +241,29 @@
                         that.speedImageName = imgHost + 'hungry/';
                         break;
                     case 'layegg':
-                        // 下蛋过程 38
-                        that.layeggShow = true;
-                        length = 38;
-                        that.speedImgsLength = 38;
+                        // 下蛋过程 50
+                        length = 50;
+                        that.speedImgsLength = 50;
                         that.speedImageName = imgHost + 'layegg/';
                         break;
-                        // case 'none':
-                        //     clearInterval(that.interval)
-                        //     clearTimeout(that.timeOut)
-                        //     length = 1;
-                        //     that.speedImgsLength = 1;
-                        //     that.speedImageName = imgHost + 'img/c';
-                        //     break;
                     default:
                         break;
                 }
                 that.nowStatus = type;
                 that.imgMoveShow = true;
-                // that.imgUrls = imgHost + type + '/' + lefts + '.png';
                 that.interval = setInterval(() => {
                     lefts++;
                     if (lefts > length) {
-                        if (that.layeggShow) {
+                        if (type == 'layegg') {
                             clearInterval(that.interval)
                             clearTimeout(that.timeOut)
-                            that.layeggShow = false;
-                            that.nowStatus = '';
-                            length = 1;
-                            that.speedImgsLength = 1;
-                            that.newImagesShow = 1;
-                            that.speedImageName = imgHost + 'img/c';
+                            lefts = 1;
+                            that._getInfoData()
+                            // console.log('下蛋倒计时结束~')
                             return
                         }
                         lefts = 1;
                     }
-                    // that.imgUrls = imgHost + type + '/' + lefts + '.png';
                     that.newImagesShow = lefts;
                 }, 100);
             },
@@ -289,6 +276,7 @@
                     let serverTime = Date.parse(new Date(that.actionInfo.nowtime.replace(/-/g, '/'))) / 1000;
                     that.serverReduce = parseInt(serverTime - nowTime)
                 }
+                // console.log(that.chickInfo.state)
                 switch (that.chickInfo.state) {
                     case 0:
                         // 新人
@@ -394,11 +382,6 @@
             },
             _getInfoData: function (type) {
                 let that = this;
-                clearInterval(that.interval)
-                clearTimeout(that.timeOut)
-                that.imgLength = 1;
-                that.nowStatus = '';
-                that.layeggShow = false;
                 that.$http({
                     url: gameApi.homeInfoApi,
                     method: "post",
@@ -412,6 +395,11 @@
                     }
                 }).then(function (res) {
                     if (res.data.status == 0) {
+                        clearInterval(that.interval)
+                        clearTimeout(that.timeOut)
+                        that.nowStatus = '';
+                        that.imgLength = 1;
+                        that.layeggShow = false;
                         // 小鸡状态
                         that._chickState(res.data.data)
 
@@ -606,7 +594,7 @@
                                 // window.webkit.messageHandlers.goWork.postMessage();
                                 window.goFastPager()
                             } catch (error) {
-                                console.log('h5')
+                                // console.log('h5')
                             }
                         }
                     } else {
@@ -617,7 +605,7 @@
                                 // window.webkit.messageHandlers.goInvite.postMessage();
                                 window.goInvite()
                             } catch (error) {
-                                console.log('h5')
+                                // console.log('h5')
                             }
                         }
                     }
@@ -739,7 +727,7 @@
                             that._newGuide()
                         }
                         that.setNameShow = false;
-                        console.log(that.guideIndex2)
+                        // console.log(that.guideIndex2)
                         break;
 
                     default:
@@ -803,6 +791,10 @@
                 // console.log(that.serverReduce)
                 // let endTime = Date.parse(new Date(time.replace(/-/g, '/'))) / 1000;
                 // let nowTime = Date.parse(new Date(stime.replace(/-/g, '/'))) / 1000;
+                if (that.layeggShow) {
+                    // console.log('下蛋ing...')
+                    return
+                }
                 return that._changeOutTime(nowTime, endTime)
             },
             // 时间戳转化为倒计时
@@ -811,10 +803,13 @@
                 let countDownTime = '';
                 let t = end - start;
                 if (t <= 0) {
+                    // that.nowStatus = '';
                     clearInterval(that.interval)
                     clearTimeout(that.timeOut)
+                    that.layeggShow = true;
                     that.feedTimeShow = false;
-                    that._getInfoData()
+                    that._toFeed('layegg', 10000, false)
+                    // console.log('喂食倒计时结束~~')
                     return
                 }
 
