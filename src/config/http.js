@@ -15,9 +15,11 @@ axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 // http://192.168.1.32:8010  欣欣
 
+// 正式 http://manorapp.pceggs.com
+
 // 测试 http://manortest.pceggs.com
 
-const DEFAULT_API_HOST = 'http://192.168.1.63:8082'
+const DEFAULT_API_HOST = 'http://manorapp.pceggs.com'
 
 axios.defaults.baseURL = DEFAULT_API_HOST
 // axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? LOCAL_HOST : API_HOST

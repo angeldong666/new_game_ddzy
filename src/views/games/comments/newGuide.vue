@@ -14,7 +14,7 @@
         </div>
         <!-- 收蛋 -->
         <div class="guide-content guide-eggs" v-show="indexShow == 2">
-            <div class="msg-container msg-lr msg-eggs-1" style="width:2.3rem;">点击领取孵化的鸡蛋
+            <div class="msg-container msg-lr msg-eggs-1" style="min-width:2.3rem;white-space:nowrap;">点击领取孵化的鸡蛋
                 <div class="msg-san msg-san-left center3"></div>
             </div>
             <div class="guide-eggs-img">
@@ -261,7 +261,7 @@
         }
 
         .f-img2 {
-            width: 60%;
+            width: .84rem;
             position: absolute;
             top: 60%;
             left: 60%;

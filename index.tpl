@@ -28,9 +28,11 @@
             -ms-user-select: none;
             user-select: none;
         }
+
         input {
             -webkit-user-select: auto;
         }
+
         body {
             background: #75d0f2 url(http://download.pceggs.com:8080/xjyx/egg/img/bg0.png) no-repeat bottom;
             background-size: 100%;
@@ -102,7 +104,6 @@
     <div id="app">
         <app></app>
     </div>
-
     <input type="hidden" id="userid" name="" value="28140992">
     <input type="hidden" id="ptype" name="" value="2">
     <input type="hidden" id="deviceid" name="" value="863049033556450">

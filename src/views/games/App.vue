@@ -4,8 +4,8 @@
 		<div class="navbar flex-bt">
 			<div class="nav-left" @click="goHome()"></div>
 			<div class="nav-center">蛋蛋庄园</div>
-			<div class="nav-right" @click="_clearUserInfo">重置</div>
-			<!-- <div class="nav-right"></div> -->
+			<!-- <div class="nav-right" @click="_clearUserInfo">重置</div> -->
+			<div class="nav-right"></div>
 		</div>
 		<!-- <router-view :base-info="baseInfo"></router-view> -->
 		<Home></Home>
@@ -382,6 +382,49 @@
 
 		100% {
 			transform: translate(-5px, 0)
+		}
+	}
+
+	.scale-box {
+		animation: scaledraw 1.5s infinite;
+		-webkit-animation: scaledraw 1.5s infinite;
+	}
+
+	@keyframes scaledraw {
+
+		0% {
+			transform: scale(1);
+		}
+
+		25% {
+			transform: scale(1.1);
+		}
+
+		50% {
+			transform: scale(1);
+		}
+
+		75% {
+			transform: scale(1.1);
+		}
+	}
+
+	@-webkit-keyframes scaledraw {
+
+		0% {
+			transform: scale(1);
+		}
+
+		25% {
+			transform: scale(1.1);
+		}
+
+		50% {
+			transform: scale(1);
+		}
+
+		75% {
+			transform: scale(1.1);
 		}
 	}
 

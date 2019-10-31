@@ -12,7 +12,7 @@
                     <img v-for="(item,index) in speedImgsLength" :key="index" v-show="newImagesShow == (index + 1)"
                         :src="'http://download.pceggs.com:8080/xjyx/egg/newgold/'+(index+1)+'.png'" alt="">
                 </div>
-                <div class="content-btn center" @click="_setChickName()"></div>
+                <div class="content-btn scale-box" @click="_setChickName()"></div>
             </div>
             <!-- 鸡 -->
             <div class="content-div" v-if="!layeggShow && !newUser">
@@ -28,7 +28,8 @@
                         :src="speedImageName +(index+1)+'.png'" alt="">
                 </div>
             </div>
-            <div class="msg-container msg-updown" style="width:3.4rem;top:0;left:0;" v-if="!layeggShow && newUser">
+            <div class="msg-container msg-updown" style="min-width:3.2rem;top:0;left:0;white-space: nowrap;"
+                v-if="!layeggShow && newUser">
                 蛋蛋庄园有一只可爱的小鸡。
                 <div class="msg-san msg-san-down" style="left:1rem;"></div>
             </div>
@@ -48,10 +49,13 @@
         </div>
         <!-- 饲料 -->
         <div class="feed" v-if="!newUser && chickInfo" @click="_feeding()">
-            <div class="feed-cont"></div>
-            <div class="feed-weight stroke" v-show="!feedTimeShow">{{chickInfo.foodnum || 0}}g</div>
-            <div class="feed-weight feed-time stroke" v-if="feedTimeShow">
-                <p class="stroke3">进食中</p>{{_changeTime(actionInfo.nowtime,actionInfo.endtime)}}
+            <div class="feed-cont">
+                <div class="stroke feed-re-num">{{chickInfo.foodnum || 0}}g</div>
+            </div>
+            <div class="feed-weight feed-weishi" v-show="!feedTimeShow"></div>
+            <div class="feed-weight feed-time" v-if="feedTimeShow">
+                <p class=""></p>
+                <p class="center">{{_changeTime(actionInfo.nowtime,actionInfo.endtime)}}</p>
             </div>
         </div>
         <!-- 点击攻略 -->
@@ -176,9 +180,9 @@
                 let that = this;
                 // that.raiderShow = !that.raiderShow;
                 try {
-                    window.goSecondPage('http://manortest.pceggs.com/Pages/Manor/Raider.aspx')
+                    window.goSecondPage('http://manorapp.pceggs.com/Pages/Manor/Raider.aspx')
                 } catch (error) {
-                    window.location.href = 'http://manortest.pceggs.com/Pages/Manor/Raider.aspx'
+                    window.location.href = 'http://manorapp.pceggs.com/Pages/Manor/Raider.aspx'
                 }
             },
             _toFeed: function (type, time, clear) {
@@ -410,7 +414,7 @@
             },
             _feeding: function () {
                 let that = this;
-                if (that.chickInfo && that.actionInfo || that.chickInfo.state == 2) {
+                if (that.feedTimeShow) {
                     return that.$toast('不要着急,还没吃完呢')
                 }
 
@@ -901,6 +905,7 @@
                 .content-btn {
                     position: absolute;
                     bottom: -1rem;
+                    left: -.5rem;
                     width: 4rem;
                     height: .96rem;
                     background: url(http://download.pceggs.com:8080/xjyx/egg/img/b1.png) no-repeat center;
@@ -1019,8 +1024,19 @@
             .feed-cont {
                 width: 100%;
                 height: 100%;
+                position: relative;
+
                 // background: url(http://download.pceggs.com:8080/xjyx/egg/img/w3.png) no-repeat center;
                 // background-size: 100% auto;
+                .feed-re-num {
+                    text-align: center;
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    line-height: .3rem;
+                    color: #fff;
+                }
             }
 
             .feed-weight {
@@ -1028,15 +1044,35 @@
                 bottom: -.2rem;
                 left: 0;
                 width: 100%;
-                height: .4rem;
-                line-height: .4rem;
+                height: .35rem;
+                line-height: .35rem;
                 font-size: .32rem;
                 color: #fff;
                 text-align: center;
 
                 p {
+                    display: block;
                     font-size: .28rem;
                 }
+
+                p:nth-child(1) {
+                    width: 100%;
+                    height: .35rem;
+                    background: url(http://download.pceggs.com:8080/xjyx/egg/img/jinshi1.png) no-repeat center;
+                    background-size: auto 100%;
+                }
+
+                p:nth-child(2) {
+                    padding: 0 .2rem;
+                    background: rgba(0, 0, 0, 0.3);
+                    border-radius: .24rem;
+                    box-sizing: content-box;
+                }
+            }
+
+            .feed-weishi {
+                background: url(http://download.pceggs.com:8080/xjyx/egg/img/weishi1.png) no-repeat center;
+                background-size: auto 100%;
             }
         }
 

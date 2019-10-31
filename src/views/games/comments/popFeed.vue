@@ -46,8 +46,8 @@
 
             .feed-img {
                 position: relative;
-                width: 3.4rem;
-                height: 3.4rem;
+                width: 4rem;
+                height: 4rem;
 
                 img {
                     width: 100%;
