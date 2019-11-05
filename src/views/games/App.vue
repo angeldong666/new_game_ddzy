@@ -64,7 +64,7 @@
 						that.$toast('数据清除成功~ 请退出重进~')
 					}
 				})
-				localStorage.clear()
+				// localStorage.clear()
 			},
 			goHome: function () {
 				try {

@@ -96,11 +96,12 @@
 </head>
 
 <body>
-    <div id="loading" class="loading">
+    <!-- <div id="loading" class="loading">
         <div class="loading-center loading-content">
             <p>正在打扫蛋蛋庄园中...</p>
         </div>
-    </div>
+    </div> -->
+    <div id="loading"></div>
     <div id="app">
         <app></app>
     </div>

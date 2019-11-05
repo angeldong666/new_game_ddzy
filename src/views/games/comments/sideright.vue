@@ -1,7 +1,7 @@
 <template>
     <!-- 侧边栏(左)) -->
     <div class="sider">
-        <div class="item" v-for="(item,index) in iconList" :key="index" @click="_showNone">
+        <div class="item" v-for="(item,index) in iconList" :key="index" @click="rightData._sideRight(index)">
             <img :src="item.img" :alt="item.name">
         </div>
     </div>
@@ -10,7 +10,7 @@
 <script>
     export default {
         name: 'sider',
-        props: [],
+        props: ['rightData'],
         data() {
             return {
                 iconList: [{
@@ -30,15 +30,6 @@
                     id: 2,
                 }],
             }
-        },
-        mounted() {
-
-        },
-        methods: {
-
-      _showNone: function name(params) {
-        this.$toast('敬请期待')
-      }
         },
     }
 </script>
