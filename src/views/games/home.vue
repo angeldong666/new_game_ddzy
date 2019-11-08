@@ -49,15 +49,15 @@
         </div>
         <!-- 饲料 -->
         <div :class="'feed ' + (foodSide?'feed-side-act':'feed-side-hide')" v-if="!newUser && chickInfo && foodInfo"
-            @click="_changeFeedAct">
+            @click="_changeFeedAct()">
             <!-- 饲料列表 -->
             <div :class="'feed-cont '+('feed-cont'+item.foodtype)" v-show="foodSide" v-for="(item,index) in foodInfo"
                 :key="index" @click="_feeding(item.foodtype,item.total,false)">
                 <div class="stroke feed-re-num">{{item.total || 0}}g</div>
             </div>
             <!-- 当前饲料 -->
-            <div :class="'feed-cont '+('feed-cont'+foodInfo[1].foodtype)" v-show="!foodSide">
-                <div class="stroke feed-re-num">{{foodInfo[1].total || 0}}g</div>
+            <div :class="'feed-cont '+(foodInfo.length>1?('feed-cont'+foodInfo[1].foodtype):('feed-cont'+foodInfo[0].foodtype))" v-show="!foodSide">
+                <div class="stroke feed-re-num">{{foodInfo.length>1?(foodInfo[1].total):(foodInfo[0].total)}}g</div>
             </div>
 
             <div class="feed-weight feed-weishi" v-show="!feedTimeShow"></div>
@@ -186,7 +186,12 @@
         },
         methods: {
             _changeFeedAct: function () {
-                this.foodSide = !this.foodSide;
+                let that = this;
+                if (that.foodInfo.length == 1) {
+                    that._feeding(that.foodInfo[0].foodtype,100,true)
+                    return
+                }
+                that.foodSide = !that.foodSide;
             },
             _sideRight: function (id) {
                 let that = this;
@@ -215,7 +220,7 @@
                 if (type == status) {
                     return
                 }
-                if (status == 'feed' && !that.layeggShow) {
+                if ((status == 'feed' || status == 'feedHigh') && !that.layeggShow) {
                     return that.$toast('不要着急,还没吃完呢')
                 }
                 if (status == 'layegg') {
@@ -343,15 +348,6 @@
                     }
                 }
                 that.$loading()
-                // 收蛋
-                // let eggNumbers = that._fullNumber(that.chickInfo.eggs, that.chickInfo.eggsmax,
-                //     2).eggNumber || 0;
-                // if (eggNumbers >= 1) {
-                //     that._toFeed('layegg')
-                //     that.egglineShow = true;
-                // } else {
-                //     that.egglineShow = false;
-                // }
             },
             _newGuide: function (number) {
                 // 新人引导
@@ -389,7 +385,8 @@
                 switch (index) {
                     case 1:
                         // 引导 1 喂食
-                        that._feeding(1, 100, true)
+                        // that._feeding(1, 100, true)
+                        that._changeFeedAct()
                         that.newGuideShow = false;
                         break;
                     case 2:
@@ -435,10 +432,6 @@
             },
             _feeding: function (type, num, newg) {
                 let that = this;
-                if (!that.foodSide && !newg) {
-                    // 未展开,非新人引导喂食
-                    return
-                }
                 if (num <= 0) {
                     return that.$toast('小鸡饲料不足')
                 }
@@ -899,10 +892,10 @@
             _closePopHome: function () {
                 let that = this;
                 if (that.popHomeMsg && that.popHomeMsg.taskid == 1) {
-                    // 新人首次送饲料
+                    // 新人送饲料
                     that._newGuide()
                 }
-                if (that.popHomeMsg && that.popHomeMsg.taskid == 2) {
+                if (that.popHomeMsg && that.popHomeMsg.taskid == 9) {
                     // 新人首次登录送饲料
                     that._newGuide()
                 }
