@@ -3,9 +3,9 @@
 		<!-- 导航栏 -->
 		<div class="navbar flex-bt">
 			<div class="nav-left" @click="goHome()"></div>
-			<div class="nav-center">蛋蛋庄园</div>
-			<div class="nav-right" @click="_clearUserInfo">重置</div>
-			<!-- <div class="nav-right"></div> -->
+			<div class="nav-center" @click="_clearStorage">蛋蛋庄园</div>
+			<div class="nav-right" v-if="isTest" @click="_clearUserInfo">重置</div>
+			<div class="nav-right" v-if="!isTest"></div>
 		</div>
 		<!-- <router-view :base-info="baseInfo"></router-view> -->
 		<Home></Home>
@@ -31,6 +31,7 @@
 					unix: '',
 					token: '',
 				},
+				isTest: false,
 			}
 		},
 		mounted() {
@@ -43,11 +44,17 @@
 			that.baseInfo.token = document.getElementById('token').value;
 			that.baseInfo.keycode = document.getElementById('keycode').value;
 
+			let uids = document.getElementById('testuid').value;
+			that.isTest = uids.indexOf(that.baseInfo.userid) != -1 ? true : false;
+
 		},
 		methods: {
 			_clearUserInfo: function () {
 				// clearApi
 				let that = this;
+				if (!that.isTest) {
+					return
+				}
 				that.$http({
 					url: gameApi.clearApi,
 					method: "post",
@@ -64,7 +71,13 @@
 						that.$toast('数据清除成功~ 请退出重进~')
 					}
 				})
-				// localStorage.clear()
+			},
+			_clearStorage: function () {
+				let that = this;
+				if (that.isTest) {
+					localStorage.clear()
+					that.$toast('引导清除成功~ 请退出重进~')
+				}
 			},
 			goHome: function () {
 				try {

@@ -111,6 +111,8 @@
     <input type="hidden" id="unix" name="" value="1571104543">
     <input type="hidden" id="token" name="" value="hws4akaa8aq7f78or8317ala5o6ir7ssgwlb87rd">
     <input type="hidden" id="keycode" name="" value="A30F46CCFF8574190D58AA0870295818">
+
+    <input type="hidden" id="testuid" name="" value="28438830,28140992">
 </body>
 <% for (var i in htmlWebpackPlugin.options.cdn.js) { %>
 <script src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>

@@ -56,7 +56,8 @@
                 <div class="stroke feed-re-num">{{item.total || 0}}g</div>
             </div>
             <!-- 当前饲料 -->
-            <div :class="'feed-cont '+(foodInfo.length>1?('feed-cont'+foodInfo[1].foodtype):('feed-cont'+foodInfo[0].foodtype))" v-show="!foodSide">
+            <div :class="'feed-cont '+(foodInfo.length>1?('feed-cont'+foodInfo[1].foodtype):('feed-cont'+foodInfo[0].foodtype))"
+                v-show="!foodSide">
                 <div class="stroke feed-re-num">{{foodInfo.length>1?(foodInfo[1].total):(foodInfo[0].total)}}g</div>
             </div>
 
@@ -171,6 +172,7 @@
                 serverReduce: 0,
                 foodSide: false,
                 shopsShow: false,
+                locals: {}
             }
         },
         mounted() {
@@ -183,12 +185,13 @@
             that.baseInfo.keycode = document.getElementById('keycode').value;
             that._getInfoData()
             that._popHome()
+            that.locals.uid = that.baseInfo.userid;
         },
         methods: {
             _changeFeedAct: function () {
                 let that = this;
                 if (that.foodInfo.length == 1) {
-                    that._feeding(that.foodInfo[0].foodtype,100,true)
+                    that._feeding(that.foodInfo[0].foodtype, 100, true)
                     return
                 }
                 that.foodSide = !that.foodSide;
@@ -216,6 +219,9 @@
                 let status = that.nowStatus;
                 let lefts = that.newImagesShow;
                 let imgHost = 'http://download.pceggs.com:8080/xjyx/egg/';
+                let egglv = that.chickInfo.dlevel || 0;
+                // let egglv = 4;
+                let eggimg = '';
                 // console.log(type + '---' + status)
                 if (type == status) {
                     return
@@ -226,6 +232,12 @@
                 if (status == 'layegg') {
                     return
                 }
+                if (egglv >= 0 && egglv < 4) {
+                    eggimg = 'feed_lv1/';
+                } else if (egglv >= 4) {
+                    eggimg = 'feed_lv4/';
+                }
+
                 that.nowStatus = '';
                 clearInterval(that.interval)
                 clearTimeout(that.timeOut)
@@ -241,32 +253,32 @@
                         // that.imgLength = 1;
                         length = 23;
                         that.speedImgsLength = 23;
-                        that.speedImageName = imgHost + 'feed/';
+                        that.speedImageName = imgHost + eggimg + 'feed/';
                         break;
                     case 'feedHigh':
                         // 喂食23
                         // that.imgLength = 1;
                         length = 23;
                         that.speedImgsLength = 23;
-                        that.speedImageName = imgHost + 'feed2/';
+                        that.speedImageName = imgHost + eggimg + 'feedHigh/';
                         break;
                     case 'touch':
                         // 摸摸25
                         length = 25;
                         that.speedImgsLength = 25;
-                        that.speedImageName = imgHost + 'touch/';
+                        that.speedImageName = imgHost + eggimg + 'touch/';
                         break;
                     case 'hungry':
                         // 饿了25
                         length = 25;
                         that.speedImgsLength = 25;
-                        that.speedImageName = imgHost + 'hungry/';
+                        that.speedImageName = imgHost + eggimg + 'hungry/';
                         break;
                     case 'layegg':
                         // 下蛋过程 50
                         length = 50;
                         that.speedImgsLength = 50;
-                        that.speedImageName = imgHost + 'layegg/';
+                        that.speedImageName = imgHost + eggimg + 'layegg/';
                         break;
                     default:
                         break;
@@ -341,7 +353,7 @@
                     that.setNameShow = true;
                     that.popType = false;
                     that.popDleve = '<p>小鸡升至LV' + that.chickInfo.uplevel +
-                        '啦！</p><p>记得<font color="#FF4B27">领取孵化的鸡蛋</font>可兑换抽奖</p>';
+                        '啦！</p><p>记得<font color="#FF4B27">领取孵化的鸡蛋</font></p>';
                     if (that.chickInfo.uplevel == 1) {
                         // 新人升级收蛋
                         that.guideIndex2 = true;
@@ -350,17 +362,24 @@
                 that.$loading()
             },
             _newGuide: function (number) {
-                // 新人引导
+                // 新人引导 
                 let that = this;
                 let localData = localStorage.getItem('gameEggs') || null;
-                let local = {};
+                let local = that.locals;
                 if (localData) {
                     localData = JSON.parse(localData);
-                    if (localData.index <= 7) {
-                        that.newGuideShow = true;
-                        that.guideData = number ? number : localData.index;
+                    if (localData.index || (localData.uid == that.chickInfo.chickid)) {
+                        if (localData.index <= 7) {
+                            that.newGuideShow = true;
+                            that.guideData = number ? number : localData.index;
+                        } else {
+                            that.newGuideShow = false;
+                        }
                     } else {
-                        that.newGuideShow = false;
+                        that.newGuideShow = true;
+                        that.guideData = 1;
+                        local.index = 1;
+                        that._setLolstorage('gameEggs', local)
                     }
                 } else {
                     that.newGuideShow = true;
@@ -375,7 +394,7 @@
             },
             _changeGuideIndex: function (index) {
                 let that = this;
-                let local = {};
+                let local = that.locals;
                 if (index >= 7) {
                     that.newGuideShow = false;
                     local.index = 8;
@@ -575,7 +594,7 @@
                         that.reciveGoldMsg = res.data.data.receivedeggs || 0;
                         that._getInfoData()
                         if (that.guideIndex2) {
-                            let local = {}
+                            let local = that.locals;
                             local.index = 1;
                             that._setLolstorage('gameEggs', local)
                             setTimeout(() => {
@@ -610,6 +629,12 @@
                 })
             },
             _taskGoldData: function (id, type, type2) {
+                /**
+                 *  params:(id, status, type)
+                 * status : 0 去试玩,去邀请 { tasktype: 1 去试玩, 2 去邀请, 3 去喂食 }
+                            1 去领取
+                            2 已领取
+                 */
                 let that = this;
                 if (type == 2) {
                     return
@@ -618,24 +643,21 @@
                         try {
                             android.goFastPager()
                         } catch (error) {
-                            try {
-                                // window.webkit.messageHandlers.goWork.postMessage();
+                            if (window.goFastPager) {
                                 window.goFastPager()
-                            } catch (error) {
-                                // console.log('h5')
                             }
                         }
-                    } else {
+                    } else if (type2 == 2) {
                         try {
                             android.goInvite()
                         } catch (error) {
-                            try {
-                                // window.webkit.messageHandlers.goInvite.postMessage();
+                            if (window.goInvite) {
                                 window.goInvite()
-                            } catch (error) {
-                                // console.log('h5')
                             }
                         }
+                    } else if (type2 == 3) {
+                        // 去喂食
+                        that._closeList();
                     }
                     return
                 }

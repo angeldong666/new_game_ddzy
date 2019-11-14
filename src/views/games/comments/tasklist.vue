@@ -7,10 +7,10 @@
                 <div class="task-item flex-bt" v-for="(item,index) in closeList.taskList" :key="index">
                     <div class="item-left">
                         <div class="left-name">{{item.taskname}}</div>
-                        <div class="left-num">{{item.foodnum}}</div>
+                        <div class="left-num">{{item.foodnum}}<img class="center2" :src="item.imgurl" alt=""></div>
                     </div>
                     <div class="item-right" @click="closeList._taskGoldData(item.taskid,item.status,item.tasktype)">
-                        <div :class="'right-btn ' +(_btnStyle(item.status,item.tasktype))"></div>
+                        <img :src="item.btnimg" alt="">
                     </div>
                 </div>
             </div>
@@ -38,32 +38,6 @@
 
         },
         methods: {
-            _btnStyle: function (type,type2) {
-                /*
-                status : 0 去试玩,去邀请 { tasktype: 1 去试玩, 2 去邀请 }
-                         1 去领取
-                         2 已领取
-                */
-                switch (type) {
-                    case 0:
-                        if (type2 == 1) {
-                        return 'btn-hide'
-                            
-                        }else{
-                        return 'btn-hide2'
-
-                        }
-                        break;
-                    case 1:
-                        return 'btn-get'
-                        break;
-                    case 2:
-                        return 'btn-act'
-                        break;
-                    default:
-                        break;
-                }
-            },
             _selfClose: function () {
                 let that = this;
                 that.popUp = false;
@@ -84,12 +58,12 @@
 
                 .task-item {
                     width: 100%;
-                    height: 1.33rem;
                     background: #F9D6A3;
                     box-shadow: 0px 3px 0px 0px #E9C38B inset;
                     border-radius: .2rem;
                     padding: .3rem;
                     margin-bottom: .2rem;
+                    align-items: center;
 
                     .item-left {
                         .left-name {
@@ -111,43 +85,24 @@
                             color: #fff;
                             margin-top: .16rem;
                             font-size: .22rem;
-                        }
 
-                        .left-num::before {
-                            display: block;
-                            content: '';
-                            width: .45rem;
-                            height: .5rem;
-                            background: url(http://download.pceggs.com:8080/xjyx/egg/img/s2.png) no-repeat;
-                            background-size: 100% auto;
-                            position: absolute;
-                            top: -.07rem;
-                            left: -.05rem;
+                            img {
+                                width: .46rem;
+                                height: auto;
+                                left: -.1rem;
+                                -ms-transform: translate(0, -50%);
+                                -moz-transform: translate(0, -50%);
+                                -o-transform: translate(0, -50%);
+                                transform: translate(0, -50%);
+                            }
                         }
                     }
 
                     .item-right {
-                        .right-btn {
-                            width: 1.52rem;
-                            height: 100%;
-                        }
+                        width: 1.52rem;
 
-                        .btn-hide {
-                            background: url(http://download.pceggs.com:8080/xjyx/egg/img/b5.png) no-repeat center;
-                            background-size: 100% auto;
-                        }
-                        .btn-hide2 {
-                            background: url(http://download.pceggs.com:8080/xjyx/egg/img/b8.png) no-repeat center;
-                            background-size: 100% auto;
-                        }
-                        .btn-get {
-                            background: url(http://download.pceggs.com:8080/xjyx/egg/img/b7.png) no-repeat center;
-                            background-size: 100% auto;
-                        }
-
-                        .btn-act {
-                            background: url(http://download.pceggs.com:8080/xjyx/egg/img/b3.png) no-repeat center;
-                            background-size: 100% auto;
+                        img {
+                            width: 100%;
                         }
                     }
                 }
