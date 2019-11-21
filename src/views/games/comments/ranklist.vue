@@ -8,15 +8,19 @@
                 <p>昵称</p>
                 <p>小鸡等级</p>
             </div>
-            <div class="list-list rank-list center">
-                <div class="rank-item flex-bt" v-for="(item,index) in closeList.rankList" :key="index">
-                    <div :class="'item-left ' + (item.rank>3?'':('rn-'+item.rank))">{{item.rank>3?item.rank:''}}</div>
-                    <div class="item-center flex-left">
-                        <div class="center-img"><img :src="item.headimg" alt="">
+            <div class="list-list rank-list center" ref="rankScroll">
+                <div :class="'rank-item flex-bt ' + (uid == item.userid?'item-act ':'') + (item.userid == 'none'?' item-none-bot ':'')"
+                    v-for="(item,index) in closeList.rankList" :key="index">
+                    <div v-show="item.userid!='none'"
+                        :class="'item-left '+(item.rank>3?'':('rn-'+item.rank)) + ((uid == item.userid && item.rank > 3)?' item-act-left':' item-hide-left')">
+                        {{item.rank>3?item.rank:''}}</div>
+                    <div v-show="item.userid!='none'" class="item-center flex-left">
+                        <div class="center-img" v-show="item.userid!='none'"><img :src="item.headimg" alt="">
                         </div>
                         <div class="center-name text-ellipsis">{{item.nickname}}</div>
                     </div>
-                    <div class="item-right">{{item.dlevel}}</div>
+                    <div v-show="item.userid!='none'" class="item-right">{{item.dlevel}}</div>
+                    <div class="item-add" v-if="item.userid=='none'">...</div>
                 </div>
             </div>
             <div class="list-close rank-close" @click="_selfClose"></div>
@@ -27,46 +31,59 @@
 <script>
     export default {
         name: '',
-        props: ['closeList'],
+        props: ['closeList', 'rank', 'uid'],
         data() {
             return {
                 popUp: false,
-                list: [{
-                    name: '测试1',
-                    num: '阿斯达所多',
-                    btn: false,
-                    rn: 1,
-                    level: 'LV.99'
-                }, {
-                    name: '测试1',
-                    num: '阿斯',
-                    btn: false,
-                    rn: 2,
-                    level: 'LV.99'
-                }, {
-                    name: '测试1',
-                    num: '阿斯达所多阿斯达所多',
-                    btn: false,
-                    rn: 3,
-                    level: 'LV.99'
-                }, {
-                    name: '测试1',
-                    num: '阿阿斯达所多',
-                    btn: false,
-                    rn: 4,
-                    level: 'LV.99'
-                }, ]
+                font: null,
             }
         },
-        mounted() {
-
-        },
+        mounted() {},
         watch: {
             'closeList.rankShow': function () {
-                this.popUp = this.closeList.rankShow;
+                let that = this;
+                if (that.font) {
+                    that._scrollList(that.font)
+                } else {
+                    that.font = document.getElementsByTagName('html')[0].style.fontSize.split('px')[0];
+                    that._scrollList(that.font)
+                }
+                that.popUp = that.closeList.rankShow;
             }
         },
         methods: {
+            _scrollList: function (num) {
+                let that = this;
+                let itemHeight = (num * 1.08).toFixed(2);
+                let arr = this.closeList.rankList || [];
+                let ranks = 0;
+                let isAdd = false;
+                for (const key in arr) {
+                    if (arr[key].userid == that.uid) {
+                        ranks = (key - 2) * itemHeight;
+                    }
+                    try {
+                        if ((arr[10].rank - arr[9].rank) > 1) {
+                            isAdd = true;
+                        }
+                    } catch (error) {
+                        isAdd = true;
+
+                    }
+                }
+                if (isAdd) {
+                    try {
+                        arr.splice(10, 0, {
+                            userid: 'none',
+                            nickname: '...'
+                        })
+                    } catch (error) {
+
+                    }
+                }
+
+                that.$refs.rankScroll.scrollTop = ranks;
+            },
             _selfClose: function () {
                 let that = this;
                 that.popUp = false;
@@ -82,6 +99,8 @@
 
 
 <style lang='less' scoped>
+    @ser: .7rem;
+
     .rank {
         .rank-cont {
             .rank-label {
@@ -102,34 +121,50 @@
                 top: 3.3rem;
                 height: 6.4rem;
 
+                .item-act {
+                    background: #FBE1B8;
+                    border-radius: .1rem;
+                }
+
                 .rank-item {
                     width: 100%;
                     height: 1.08rem;
                     border-bottom: 1px solid #FBE0B1;
                     padding: 0 .2rem;
                     line-height: 1.08rem;
+                    align-items: center;
 
                     .item-left {
+                        width: @ser;
+                        height: @ser;
+                        line-height: @ser;
                         font-size: .24rem;
-                        color: #EDA423;
-                        width: .4rem;
-                        height: 100%;
                         text-align: center;
+                    }
+
+                    .item-act-left {
+                        color: #fff;
+                        background: #D59459;
+                        border-radius: 50%;
+                    }
+
+                    .item-hide-left {
+                        color: #EDA423;
                     }
 
                     .rn-1 {
                         background: url(http://download.pceggs.com:8080/xjyx/egg/img/rn1.png) no-repeat center;
-                        background-size: 100% auto;
+                        background-size: .4rem auto;
                     }
 
                     .rn-2 {
                         background: url(http://download.pceggs.com:8080/xjyx/egg/img/rn2.png) no-repeat center;
-                        background-size: 100% auto;
+                        background-size: .4rem auto;
                     }
 
                     .rn-3 {
                         background: url(http://download.pceggs.com:8080/xjyx/egg/img/rn3.png) no-repeat center;
-                        background-size: 100% auto;
+                        background-size: .4rem auto;
                     }
 
                     .item-center {
@@ -159,8 +194,20 @@
                         font-size: .24rem;
                         color: #FF6009;
                         font-weight: bold;
-
                     }
+
+                    .item-add {
+                        color: #6F4818;
+                        font-size: .24rem;
+                        font-weight: bold;
+                        width: 100%;
+                        text-align: center;
+                    }
+                }
+
+                .item-none-bot {
+                    border: none;
+                    height: .7rem;
                 }
             }
         }

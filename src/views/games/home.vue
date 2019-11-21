@@ -41,7 +41,7 @@
                     {{_fullNumber(chickInfo.eggs,chickInfo.eggsmax,2).eggNumber}}</div>
             </div>
             <!-- 发光 -->
-            <div v-show="egglineShow" class="egg-recived center"></div>
+            <div v-show="_fullNumber(chickInfo.eggs,chickInfo.eggsmax,2).eggNumber > 0" class="egg-recived center"></div>
             <div class="egg-progress center stroke2">
                 <div class="egg-pro-cont" :style="'width:'+(_fullNumber(chickInfo.eggs,chickInfo.eggsmax,1).num)"></div>
                 <div class="egg-pro-txt">{{_fullNumber(chickInfo.eggs,chickInfo.eggsmax,2).num}}</div>
@@ -71,9 +71,10 @@
         <div class="raider-click" @click="_closeRaider"></div>
         <SideBottom v-show="!newUser && chickInfo" :show-list="_showList"></SideBottom>
         <!-- 任务列表 -->
-        <TaskList v-show="taskShow" :close-list="{_closeList,taskShow,taskList,_taskGoldData}"></TaskList>
+        <TaskList v-show="taskShow" :close-list="{_closeList,taskShow,taskList,_taskGoldData,_shopMethods}"></TaskList>
         <!-- 排行榜 -->
-        <RankList v-show="rankShow" :close-list="{_closeList,rankShow,rankList}"></RankList>
+        <RankList v-show="rankShow" :close-list="{_closeList,rankShow,rankList}" :uid='baseInfo.userid'
+            :rank="rankList"></RankList>
         <!-- 动态 -->
         <LogList v-show="logShow" :close-list="{_closeList,logShow,logList}"></LogList>
         <!-- 个人信息 -->
@@ -141,7 +142,8 @@
                 userInfo: {},
                 foodInfo: null,
                 taskList: [],
-                rankList: [],
+                rankList: null,
+                rankLength: null,
                 shopList: null,
                 logList: [],
                 userInfos: {},
@@ -220,7 +222,7 @@
                 let lefts = that.newImagesShow;
                 let imgHost = 'http://download.pceggs.com:8080/xjyx/egg/';
                 let egglv = that.chickInfo.dlevel || 0;
-                // let egglv = 4;
+                // let egglv = 9;
                 let eggimg = '';
                 // console.log(type + '---' + status)
                 if (type == status) {
@@ -234,8 +236,10 @@
                 }
                 if (egglv >= 0 && egglv < 4) {
                     eggimg = 'feed_lv1/';
-                } else if (egglv >= 4) {
+                } else if (egglv >= 4 && egglv < 7) {
                     eggimg = 'feed_lv4/';
+                } else if (egglv >= 7) {
+                    eggimg = 'feed_lv7/';
                 }
 
                 that.nowStatus = '';
@@ -285,6 +289,7 @@
                 }
                 that.nowStatus = type;
                 that.imgMoveShow = true;
+                return
                 that.interval = setInterval(() => {
                     lefts++;
                     if (lefts > length) {
@@ -360,6 +365,7 @@
                     }
                 }
                 that.$loading()
+                that._rankListData()
             },
             _newGuide: function (number) {
                 // 新人引导 
@@ -705,7 +711,7 @@
                     }
                 }).then(function (res) {
                     if (res.data.status == 0) {
-                        that.taskList = res.data.data.TaskList || []
+                        that.taskList = res.data.data || []
                     }
                 })
             },
@@ -724,7 +730,7 @@
                     }
                 }).then(function (res) {
                     if (res.data.status == 0) {
-                        that.rankList = res.data.data.FriendList || []
+                        that.rankList = res.data.data.FriendList || [];
                     }
                 })
             },
@@ -778,9 +784,12 @@
                         that._buyProps(id)
                         break;
                     case 'my':
-                        that._useProps(id)
+                        that._useProps(id, 1)
                         break;
 
+                    case 'my2':
+                        that._useProps(id, 2)
+                        break;
                     default:
                         break;
                 }
@@ -811,7 +820,7 @@
                     }
                 })
             },
-            _useProps: function (type) {
+            _useProps: function (type, index) {
                 // 使用道具
                 let that = this;
                 // shopListApi
@@ -831,8 +840,15 @@
                 }).then(function (res) {
                     that.$toast(res.data.msg)
                     if (res.data.status == 0) {
-                        that._getShopData()
-                        that._getInfoData()
+                        if (index == 1) {
+                            that._getShopData()
+                            that._getInfoData()
+
+                        } else {
+                            that._getInfoData()
+                            that._taskListData()
+
+                        }
                     }
                 })
             },
@@ -876,7 +892,6 @@
                 let that = this;
                 switch (type) {
                     case 0:
-                        that._rankListData()
                         that.rankShow = true;
                         break;
                     case 1:
