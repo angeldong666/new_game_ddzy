@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="author" content="" />
+    <meta name="copyright" content="" />
+    <meta name="keywords" content="">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta content="telephone=no" name="format-detection" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="referrer" content="never" charset="UTF-8">
+    <link rel="shortcut icon" href="" type="image/x-icon">
+    <link rel="icon" href="" type="image/x-icon">
+    <link rel="stylesheet" href="http://download.pceggs.com:8080/xjyx/egg/css/root.css">
+    <script src="//wechat-1253215910.cossh.myqcloud.com/js/utils/rem-750.js"></script>
+    <title>蛋蛋庄园-攻略</title>
+    <style>
+        .app {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        body {
+            padding-bottom: 1.4rem;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            width: 100%;
+            height: .8rem;
+            line-height: .8rem;
+            color: #fff;
+            font-size: .32rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 99;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-left {
+            width: .8rem;
+            height: 100%;
+            background: url(http://download.pceggs.com:8080/xjyx/egg/img/j3.png) no-repeat center;
+            background-size: 30% auto;
+        }
+
+        .nav-right {
+            width: .8rem;
+            height: 100%;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+        .bottom-btn {
+            width: 100%;
+            height: 1.4rem;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 2;
+            padding: .3rem;
+            line-height: .8rem;
+            background: #519047;
+            text-align: center;
+            color: #693F0E;
+            font-size: .34rem;
+        }
+
+            .bottom-btn div {
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(0deg, rgba(251, 210, 80, 1), rgba(250, 242, 94, 1));
+                border-radius: 10px;
+            }
+    </style>
+</head>
+
+<body>
+    <div id="back" class="navbar flex-bt">
+        <div class="nav-left"></div>
+        <div class="nav-center">蛋蛋庄园-攻略</div>
+        <div class="nav-right"></div>
+    </div>
+    <img src="http://download.pceggs.com:8080/xjyx/egg/raider/strategy1.jpg" alt="">
+    <img src="http://download.pceggs.com:8080/xjyx/egg/raider/strategy2.jpg" alt="">
+    <img src="http://download.pceggs.com:8080/xjyx/egg/raider/strategy3.jpg" alt="">
+    <div id="back2" class="bottom-btn">
+        <div>去饲养小鸡</div>
+    </div>
+</body>
+<script>
+    window.onload = function () {
+        var goback = document.getElementById('back');
+        var goback2 = document.getElementById('back2');
+        goback.onclick = function () {
+            try {
+                window.goBackUp()
+            } catch (error) {
+                window.history.go(-1)
+                console.log('h51')
+            }
+        }
+        goback2.onclick = function () {
+            try {
+                window.goBackUp()
+            } catch (error) {
+                window.history.go(-1)
+                console.log('h52')
+            }
+        }
+
+    }
+</script>
+
+</html>

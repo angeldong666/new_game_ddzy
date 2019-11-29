@@ -289,7 +289,6 @@
                 }
                 that.nowStatus = type;
                 that.imgMoveShow = true;
-                return
                 that.interval = setInterval(() => {
                     lefts++;
                     if (lefts > length) {
