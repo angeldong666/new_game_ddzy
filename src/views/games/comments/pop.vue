@@ -1,10 +1,10 @@
 <template>
     <!-- 弹窗 -->
     <div class="fixed pop">
-        <div class="fixed-center center2 pop-cont">
-            <div class="pop-title center">{{setName.popType?'孵化成功':'小鸡升级啦'}}</div>
+        <div :class="'fixed-center center2 pop-cont'">
+            <div class="pop-title center">{{setName.popTitle}}</div>
             <!-- 新人首次取名 -->
-            <div class="pop-text egg-name" v-show="setName.popType">
+            <div class="pop-text egg-name" v-show="setName.popType == 1">
                 <div class="name-tip" v-html="txt1"></div>
                 <div class="name-input">
                     <input type="text" v-model="inputName" placeholder="输入你的宠物昵称">
@@ -12,11 +12,17 @@
                 <div class="pop-btn name-btn" @click="_setName(inputName)"></div>
             </div>
             <!-- 弹窗提示 -->
-            <div class="pop-text egg-msg" v-show="!setName.popType">
+            <div class="pop-text egg-msg" v-show="setName.popType == 2">
                 <div class="name-tip" v-html="setName.popDleve"></div>
                 <div class="pop-btn enter-btn" @click="setName._closePop('name')"></div>
             </div>
-            <div class="pop-close" @click="setName._closePop('name')"></div>
+            <!-- 弹窗提示 -->
+            <div :class="'pop-text egg-msg '  + (setName.popType == 3?'pop-text3':'') " v-show="setName.popType == 3">
+                <div class="name-tip" v-html="setName.popccMsg"></div>
+                <div class="pop-btn enter-btn enter-btn3" @click="setName._closePop('gotocc')"></div>
+            </div>
+            <div class="pop-close" v-show="setName.popType != 3" @click="setName._closePop('name')"></div>
+            <div class="pop-close" v-show="setName.popType == 3" @click="setName._closePop('namecc')"></div>
         </div>
     </div>
 </template>
@@ -68,6 +74,12 @@
                 width: 100%;
                 height: 100%;
                 padding: 1.3rem .9rem .8rem;
+            }
+
+            .pop-text3 {
+                width: 100%;
+                height: 100%;
+                padding: 1.3rem .9rem 0;
             }
 
             .pop-btn {
@@ -127,6 +139,12 @@
                     background: url(http://download.pceggs.com:8080/xjyx/egg/img/b2.png) no-repeat;
                     background-size: 100% 100%;
                     margin-top: .6rem;
+                }
+
+                .enter-btn3 {
+                    background: url(http://download.pceggs.com:8080/xjyx/egg/img/b19.png) no-repeat;
+                    background-size: 100% auto;
+                    margin-top: .3rem;
                 }
             }
 

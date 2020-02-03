@@ -41,7 +41,8 @@
                     {{_fullNumber(chickInfo.eggs,chickInfo.eggsmax,2).eggNumber}}</div>
             </div>
             <!-- 发光 -->
-            <div v-show="_fullNumber(chickInfo.eggs,chickInfo.eggsmax,2).eggNumber > 0" class="egg-recived center"></div>
+            <div v-show="_fullNumber(chickInfo.eggs,chickInfo.eggsmax,2).eggNumber > 0" class="egg-recived center">
+            </div>
             <div class="egg-progress center stroke2">
                 <div class="egg-pro-cont" :style="'width:'+(_fullNumber(chickInfo.eggs,chickInfo.eggsmax,1).num)"></div>
                 <div class="egg-pro-txt">{{_fullNumber(chickInfo.eggs,chickInfo.eggsmax,2).num}}</div>
@@ -80,7 +81,7 @@
         <!-- 个人信息 -->
         <UserInfo v-show="userShow" :close-list="{_closeList,userShow,userInfos}"></UserInfo>
         <!-- 弹窗(取名) -->
-        <Pop v-if="setNameShow" :set-name="{_changeName,_closePop,popType,popDleve}"></Pop>
+        <Pop v-if="setNameShow" :set-name="{_changeName,_closePop,popType,popDleve,popTitle,popccMsg}"></Pop>
         <!-- 弹窗(饲料) -->
         <PopFeed v-if="popHomeShow" :pop-home="{popHomeShow,popHomeMsg,_closePopHome}"></PopFeed>
         <!-- 弹窗(金蛋) -->
@@ -151,7 +152,8 @@
                 newUser: false,
                 layeggShow: false,
                 setNameShow: false,
-                popType: false,
+                popType: 0,
+                popccMsg: '',
                 popDleve: '',
                 imgLength: 1,
                 imgMoveShow: false,
@@ -198,12 +200,33 @@
                 }
                 that.foodSide = !that.foodSide;
             },
+            _gotoGamecc: function () {
+                let that = this;
+                let ccUrl =
+                    `http://manorapp.pceggs.com/Pages/Manor28/index.aspx?userid=${that.baseInfo.userid}&deviceid=${that.baseInfo.deviceid}&ptype=${that.baseInfo.ptype}&unix=${that.baseInfo.unix}&token=${that.baseInfo.token}&keycode=${that.baseInfo.keycode}`;
+                let uids = document.getElementById('testuid').value;
+                let isTest = uids.indexOf(that.baseInfo.userid) != -1 ? true : false;
+
+                // if (isTest) {
+                try {
+                    android.goEggsGame(ccUrl)
+                } catch (error) {
+                    window.goEggsGame(ccUrl)
+                }
+                // } else {
+                //     that.$toast('敬请期待')
+                // }
+            },
             _sideRight: function (id) {
                 let that = this;
                 switch (id) {
                     case 0:
                         that.shopsShow = !that.shopsShow;
                         that._getShopData()
+                        break;
+                    case 2:
+                        //进入小鸡猜猜
+                        that._gotoGamecc()
                         break;
 
                     default:
@@ -322,7 +345,7 @@
                         // dlevel = -1 新人 
                         // popType : false 提示  true 新人
                         that.newUser = true;
-                        that.popType = true;
+                        that.popType = 1;
 
                         that._toFeed('newgold')
 
@@ -355,13 +378,18 @@
 
                 if (that.chickInfo.uplevel > 0) {
                     that.setNameShow = true;
-                    that.popType = false;
+                    that.popType = 2;
+                    that.popTitle = '小鸡升级啦~';
                     that.popDleve = '<p>小鸡升至LV' + that.chickInfo.uplevel +
                         '啦！</p><p>记得<font color="#FF4B27">领取孵化的鸡蛋</font></p>';
                     if (that.chickInfo.uplevel == 1) {
                         // 新人升级收蛋
                         that.guideIndex2 = true;
                     }
+                }
+
+                if (that.chickInfo.dlevel >= 1 && !that.setNameShow) {
+                    that._gameccShow()
                 }
                 that.$loading()
                 that._rankListData()
@@ -394,12 +422,37 @@
                 }
 
             },
+            _gameccShow: function () {
+                let that = this;
+                let localData = localStorage.getItem('gameEggsTocc') || null;
+                if (localData) {
+                    // 不显示
+
+                } else {
+                    // 显示弹窗
+                    that.setNameShow = true;
+                    that.popTitle = '小鸡猜猜猜';
+                    that.popType = 3;
+                    that.popccMsg = '<p>鸡舍不太平~</p><p>猜猜跑掉了几只小鸡</p><p>猜中赢海量金蛋</p>';
+                    localStorage.setItem('gameEggsTocc', JSON.stringify({
+                        ccShow: false
+                    }))
+                }
+            },
             _setLolstorage: function (name, data) {
                 localStorage.setItem(name, JSON.stringify(data))
             },
             _changeGuideIndex: function (index) {
                 let that = this;
                 let local = that.locals;
+                if (index == 99) {
+                    // 小鸡猜猜引导
+                    local.index = 99;
+                    that.newGuideShow = false;
+                    that._setLolstorage('gameEggs', local)
+                    return
+
+                }
                 if (index >= 7) {
                     that.newGuideShow = false;
                     local.index = 8;
@@ -565,7 +618,7 @@
                     }
                 }).then(function (res) {
                     if (res.data.status == 0) {
-                        that.popType = false;
+                        that.popType = 0;
                         that.setNameShow = false;
                         that.newUser = false;
                         that.nowStatus = '';
@@ -868,6 +921,8 @@
             _setChickName: function () {
                 let that = this;
                 that.setNameShow = true;
+                that.popTitle = '孵化成功~';
+                that.popType = 1;
             },
             _closePop: function (type) {
                 let that = this;
@@ -880,9 +935,29 @@
                             that._newGuide()
                         }
                         that.setNameShow = false;
-                        // console.log(that.guideIndex2)
                         break;
+                    case 'gotocc':
+                        that.setNameShow = false;
+                        that._gotoGamecc()
+                        break;
+                    case 'namecc':
+                        // 小鸡猜猜引导
+                        that.setNameShow = false;
 
+                        let localData = localStorage.getItem('gameEggs') || null;
+                        if (localData) {
+                            localData = JSON.parse(localData)
+                            if (localData.index == 99) {
+                                that.setNameShow = false;
+                            } else {
+                                that.newGuideShow = true;
+                                that.guideData = 99;
+                            }
+                        } else {
+                            that.newGuideShow = true;
+                            that.guideData = 99;
+                        }
+                        break;
                     default:
                         break;
                 }

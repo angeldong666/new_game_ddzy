@@ -68,6 +68,15 @@
                 <img class="f-img1" src="http://download.pceggs.com:8080/xjyx/egg/img/t-you.png" alt="">
             </div>
         </div>
+
+        <!-- 游戏 -->
+        <div class="guide-content guide-youxi" v-show="indexShow == 99">
+            <div class="msg-container msg-lr msg-youxi-1" style="width:3.3rem;">小鸡猜猜在这里哦~ 点击前往<div class="msg-san msg-san-right center3"></div>
+            </div>
+            <div class="guide-youxi-img">
+                <img class="f-img1" src="http://download.pceggs.com:8080/xjyx/egg/img/t-game.png" alt="">
+            </div>
+        </div>
     </div>
 </template>
 
@@ -174,6 +183,24 @@
                 position: absolute;
                 margin-right: .4rem;
                 left: .3rem;
+            }
+        }
+
+        .guide-youxi {
+            top: 4.1rem;
+            height: 2rem;
+
+            .msg-youxi-1 {
+                right: 2.3rem;
+                top: .3rem;
+            }
+
+            .guide-youxi-img {
+                width: 1.1rem;
+                height: 1.2rem;
+                position: absolute;
+                margin-left: .4rem;
+                right: .3rem;
             }
         }
 
