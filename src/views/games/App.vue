@@ -192,6 +192,7 @@
 		top: 2.9rem;
 		padding: 0 .35rem 0;
 		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
 	}
 
 	.list-close {

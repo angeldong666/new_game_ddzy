@@ -8,6 +8,7 @@ export const gameApi = {
   changeNameApi: '/IFS/MyManor/MM_SetNickname.ashx',
   feedApi: '/IFS/MyManor/MM_SetChickFood.ashx',
   reciveGoldApi: '/IFS/MyManor/MM_SetChickEggs.ashx',
+  popApi: '/IFS/MyManor/MM_GetNotice.ashx',
 
   homePopApi: '/IFS/Task/Task_IndexFloat.ashx',
   taskListApi: '/IFS/Task/Task_TaskList.ashx',
@@ -20,5 +21,6 @@ export const gameApi = {
 
   userInfoApi: '/IFS/MyManor/MM_ChickDetail.ashx',
 
-  clearApi: '/IFS/MyManor/MM_DeleteChick.ashx'
+  clearApi: '/IFS/MyManor/MM_DeleteChick.ashx',
+
 }

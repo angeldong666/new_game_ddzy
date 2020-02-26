@@ -183,6 +183,7 @@
                     .shops-wc-cont {
                         height: 4.3rem;
                         overflow-y: scroll;
+                        -webkit-overflow-scrolling: touch;
 
                         .shops-wc-item {
                             width: 100%;

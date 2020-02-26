@@ -92,6 +92,9 @@
         <newGuide :guide-data="{guideData,_changeGuideIndex}" v-show="newGuideShow"></newGuide>
         <!-- 攻略 -->
         <!-- <Raiders :raider="_closeRaider" v-show="raiderShow"></Raiders> -->
+        <!-- 弹窗(更新信息) -->
+        <popMsg v-if="msgData.show" :msg-data="msgData" @_closePopShow="_closePopShow" @_gotoGamecc="_gotoGamecc"></popMsg>
+
     </div>
 </template>
 
@@ -113,6 +116,7 @@
     import newGuide from './comments/newGuide'
     import UserInfo from './comments/userInfo'
     import Shops from './comments/shops'
+    import popMsg from './comments/popmsg'
     // import Raiders from './comments/raiders'
     export default {
         name: 'home',
@@ -132,6 +136,7 @@
             UserInfo,
             // Raiders,
             Shops,
+            popMsg
         },
         data() {
             return {
@@ -176,7 +181,10 @@
                 serverReduce: 0,
                 foodSide: false,
                 shopsShow: false,
-                locals: {}
+                locals: {},
+                msgData: {
+                    show: false,
+                },
             }
         },
         mounted() {
@@ -501,11 +509,41 @@
                         that.layeggShow = false;
                         // 小鸡状态
                         that._chickState(res.data.data)
-
                     } else {
                         that.$toast(res.data.msg)
                     }
+                    that._getPopsData()
                 })
+            },
+            _getPopsData: function () {
+                let that = this;
+                that.$http({
+                    url: gameApi.popApi,
+                    method: "post",
+                    data: {
+                        userid: that.baseInfo.userid,
+                        ptype: that.baseInfo.ptype,
+                        token: that.baseInfo.token,
+                        unix: that.baseInfo.unix,
+                        deviceid: that.baseInfo.deviceid,
+                        keycode: that.baseInfo.keycode,
+                    }
+                }).then(function (res) {
+                    if (res.data.status == 0) {
+                        let datas = res.data.data.detail[0] || {};
+                        that.msgData = {
+                            show: true,
+                            title: datas.title,
+                            msg: datas.context,
+                        };
+
+                    }
+                })
+            },
+            _closePopShow: function () {
+                this.msgData = {
+                    show: false,
+                };
             },
             _feeding: function (type, num, newg) {
                 let that = this;

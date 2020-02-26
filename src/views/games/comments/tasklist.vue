@@ -10,7 +10,7 @@
                     <div :class="'task-n-hide ' + (navtab==3?'task-n-act':'')" @click="_navChange(3)">我的道具</div>
                 </div>
                 <div class="task-nav-list">
-                    <div style="width:100%;height:100%;overflow-y: scroll;">
+                    <div style="width:100%;height:100%;overflow-y: scroll;-webkit-overflow-scrolling: touch;">
                         <!-- 饲料 -->
                         <div class="task-item"
                             v-for="(item,index) in (navtab==1 ? closeList.taskList.TaskList_food : (navtab==2 ? closeList.taskList.TaskList_prop : closeList.taskList.TaskList_mine))"
